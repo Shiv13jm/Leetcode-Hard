@@ -1,0 +1,30 @@
+Minimize Max Distance to Gas Station
+class Solution {
+public:
+    bool feasible(double maxDist, vector<int> &stations, int k) {
+        int count = 0;
+        for (int i = 1; i < stations.size(); i++) {
+            // Number of new stations needed between stations[i-1] and stations[i]
+            count += (int)((stations[i] - stations[i-1]) / maxDist);
+        }
+        return count <= k;  // Return true if we can add k or fewer stations
+    }
+
+    double findSmallestMaxDist(vector<int> &stations, int k) {
+        // Binary search on the maximum distance
+        double start = 0, end = stations.back() - stations.front();
+        double ans = end;
+        
+        while (end - start > 1e-6) {  // Loop until precision is within 1e-6
+            double mid = (start + end) / 2.0;
+            
+            if (feasible(mid, stations, k)) {
+                ans = mid;  // Update ans to mid, as it's feasible
+                end = mid;  // Try for a smaller maximum distance
+            } else {
+                start = mid;  // Increase the minimum distance
+            }
+        }
+        return round(ans * 100) / 100;  // Return the result rounded to 2 decimal places
+    }
+};
